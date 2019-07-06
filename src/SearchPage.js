@@ -13,31 +13,27 @@ const SearchPage = props => {
     endPlace,
     date,
     nop,
-    placeDetails,
+    placeDetails = {},
     status,
     dispatch
   } = props;
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    const nextFormData = {};
-    if (!!startPlace) {
-      if (!placeDetails[startPlace]) {
-        dispatch(getPlaceDetail(startPlace));
-      } else {
-        nextFormData.startPlace = placeDetails[startPlace];
-      }
+    if (!!startPlace && !placeDetails[startPlace]) {
+      dispatch(getPlaceDetail(startPlace));
     }
-    if (!!endPlace) {
-      if (!placeDetails[endPlace]) {
-        dispatch(getPlaceDetail(endPlace));
-      } else {
-        nextFormData.endPlace = placeDetails[endPlace];
-      }
+    if (!!endPlace && !placeDetails[endPlace]) {
+      dispatch(getPlaceDetail(endPlace));
     }
-    nextFormData.date = date;
-    nextFormData.nop = nop;
-    setFormData(nextFormData);
+
+    //updating form with url params
+    setFormData({
+      startPlace: placeDetails[startPlace],
+      endPlace: placeDetails[endPlace],
+      date,
+      nop
+    });
   }, [startPlace, endPlace, date, nop, placeDetails, dispatch]);
 
   const onChangeFormElem = e => {
@@ -47,7 +43,7 @@ const SearchPage = props => {
   const getSerializedFormData = () => {
     return `startPlace=${formData.startPlace.placeId}&endPlace=${
       formData.endPlace.placeId
-    }&date=${formData.date}&nop=${formData.nop}`;
+      }&date=${formData.date}&nop=${formData.nop}`;
   };
   const submitForm = e => {
     const validForm = formData.startPlace && formData.endPlace;

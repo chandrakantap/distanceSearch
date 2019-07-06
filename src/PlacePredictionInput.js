@@ -11,6 +11,7 @@ export const PlacePredictionInput = props => {
   const [timeoutFunction, setTimeoutFunction] = useState(false);
 
   useEffect(() => {
+    // if a different value passed via props then update internal state
     if (value.placeId !== selectedPrediction.placeId) {
       setInternalValue(value.description || "");
       setSelectedPrediction(value);
@@ -21,10 +22,11 @@ export const PlacePredictionInput = props => {
     if (timeoutFunction) {
       clearTimeout(timeoutFunction);
     }
+    // place search api will be called after user finish typing
     setTimeoutFunction(
       setTimeout(() => {
         fetchPredictions();
-      }, 500)
+      }, 1000)
     );
     setInternalValue(e.target.value);
   };
@@ -59,6 +61,8 @@ export const PlacePredictionInput = props => {
     }
   };
 
+  const predictionCount = predictions.length;
+
   return (
     <div className={classes.ppiContainer}>
       <input
@@ -73,11 +77,11 @@ export const PlacePredictionInput = props => {
       {showPredictions && (
         <div className={classes.backdrop} onClick={onClickOutSide} />
       )}
-      {showPredictions && (
+      {showPredictions && predictionCount > 0 && (
         <ul className={classes.predictionPanel}>
           {predictions.map(p => (
             <li
-              key={p.placeId}
+              key={`${name}_${p.placeId}`}
               onClick={selectPrediction(p)}
               className={classes.pItem}
             >
@@ -90,23 +94,25 @@ export const PlacePredictionInput = props => {
   );
 };
 
-const styles = {
+const styles = theme => ({
   ppiContainer: {
     position: "relative"
   },
   ppiInput: {
-    height: "35px",
+    height: `${theme.spacing * 3}px`,
+    padding: `${theme.spacing}px`,
     fontSize: "18px",
     width: "100%",
     position: "relative",
-    zIndex: 101
+    zIndex: 101,
+    color: theme.primaryColor
   },
   predictionPanel: {
     position: "absolute",
     listStyleType: "none",
     background: "white",
     width: "100%",
-    top: "38px",
+    top: `${theme.spacing * 6}px`,
     borderTop: "1px solid grey",
     borderLeft: "1px solid grey",
     borderRight: "1px solid grey",
@@ -125,5 +131,5 @@ const styles = {
     top: 0,
     zIndex: 100
   }
-};
+});
 export default injectSheet(styles)(PlacePredictionInput);

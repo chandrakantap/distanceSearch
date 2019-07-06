@@ -20,7 +20,8 @@ const store = createStore(
 );
 
 const theme = {
-  primaryColor: "teal"
+  primaryColor: "teal",
+  spacing: 8
 };
 const App = () => (
   <ThemeProvider theme={theme}>

@@ -17,10 +17,12 @@ export const getPredictions = searchQuery =>
       (predictions, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
           resolve(
-            predictions.map(p => ({
-              placeId: p.place_id,
-              description: p.description
-            }))
+            predictions
+              .map(p => ({
+                placeId: p.place_id,
+                description: p.description
+              }))
+              .filter(p => !!p.placeId)
           );
         } else {
           resolve([]);
